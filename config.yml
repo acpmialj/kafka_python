@@ -5,3 +5,7 @@ PYTHON_1:
 PYTHON_2:
   BROKER: 'kafka_server:9092'
   CONSUMER: 'python_2'
+
+PYTHON_3:
+  BROKER: "none"
+  CONSUMER: "less"
