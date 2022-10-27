@@ -3,7 +3,7 @@
 Creamos el servidor Kafka, llamado "kafka_server" en la red "kafka-net".
 
 ```shell
-docker network create Kafka-net
+docker network create kafka-net
 docker run -d --name zookeeper --network kafka-net -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper
 docker run --rm -it --network kafka-net --name kafka_server -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181 bitnami/kafka
 ```
