@@ -13,9 +13,9 @@ import os
 with open("../config.yml", 'r') as ymlfile:
     topic_list = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
-CODE = 'PYTHON_1'
+CODE = 'PRODUCER'
 BROKER = topic_list[CODE]['BROKER']
-PRODUCER_TOPIC = topic_list[CODE]['PRODUCER']
+PRODUCER_TOPIC = topic_list[CODE]['TOPIC']
 
 #%%
 def produce_to_topic(prod_object,msg):
