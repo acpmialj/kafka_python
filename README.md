@@ -64,13 +64,24 @@ Result of operation sum is ::: 7
 ```
 NOTA: si lanzamos el consumidor antes que el productor se producirá un error debido a que el tema ("My_Topic") aún no existe. 
 
+## Limpieza
+Al detener los contenedore productor - consumidor - servidor Kafka, se eliminan. No pasa lo mismo con el servidor ZooKeeper. Hay que pararlo con "docker stop" y eliminarlo con "docker rm". 
+
+Queda crada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
+
 ## A mejorar:
 
 1. Pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
+
+docker run -it --rm --network kafka-net -v $HOME/kafka_python:/kafka_python kafka_python bash
+
+Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python"
+
+2. Lanzar todo con docker compose
+
+
  
+## Fuente
 Repositorio original: https://medium.com/nerd-for-tech/python-and-kafka-message-passing-and-more-44ccb4f1576c 
 
-## PROYECTO: 
-
-Hacer un consumidor MQTT que sea productor KAFKA. Integrarlo con ksqlDB. 
 
