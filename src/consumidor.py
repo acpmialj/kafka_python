@@ -16,10 +16,9 @@ with open("../config.yml", 'r') as ymlfile:
     topic_list = yaml.load(ymlfile, Loader=yaml.FullLoader)
 
 
-CODE = 'PYTHON_2'
+CODE = 'CONSUMER'
 BROKER = topic_list[CODE]['BROKER']
-
-CONSUMER_TOPIC = topic_list[CODE]['CONSUMER']
+CONSUMER_TOPIC = topic_list[CODE]['TOPIC']
 
 
 #function to add two numbers
