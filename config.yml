@@ -1,7 +1,7 @@
-PYTHON_1:
+PRODUCER:
   BROKER: 'kafka_server:9092'
-  PRODUCER: 'My_Topic'
+  TOPIC: 'My_Topic'
 
-PYTHON_2:
+CONSUMER:
   BROKER: 'kafka_server:9092'
-  CONSUMER: 'My_Topic'
+  TOPIC: 'My_Topic'
