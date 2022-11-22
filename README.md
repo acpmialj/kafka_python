@@ -28,6 +28,19 @@ docker run --rm -it --network kafka-net --name kafka_server -e ALLOW_PLAINTEXT_L
 ```
 El terminal queda asociado al segundo contenedor (el servidor Kafka), que irá emitiendo "logs". 
 
+## Tercera parte: lanzar PRODUCTOR
+En otro terminal lanzamos el contenedor que va a producir eventos:
+
+```shell
+docker run -it --rm --network kafka-net kafka_python bash
+```
+Una vez en el shell del productor, lanzamos el programa que genera un evento:
+
+```shell
+cd src
+python python1.py 5 7 sum
+```
+
 ## Tercera parte: lanzar CONSUMIDOR
 En un terminal nuevo, ejecutamos el contenedor que va a hacer de consumidor de eventos 
 
@@ -43,18 +56,6 @@ Starting Consumer with client id :  0
 ```
 El consumidor se asocia al terminal. Según vayamos recibiendo eventos irán apareciendo mensajes por el mismo. 
 
-## Cuarta parte: lanzar PRODUCTOR
-En otro terminal lanzamos el contenedor que va a producir eventos:
-
-```shell
-docker run -it --rm --network kafka-net kafka_python bash
-```
-Una vez en el shell del productor, lanzamos el programa que genera un evento:
-
-```shell
-cd src
-python python1.py 5 7 sum
-```
 
 Como resultado, en la ventana del consumidor veremos:
 ```shell
