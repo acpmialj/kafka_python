@@ -1,6 +1,6 @@
 # kafka_python
 
-Creamos el servidor Kafka, llamado "kafka_server" en la red "kafka-net".
+Creamos el servidor Kafka, llamado "kafka_server" en la red "kafka-net". Para su funcionamiento necesita un clúster ZooKeeper -- en este caso, con un único nodo.
 
 ```shell
 docker network create kafka-net
@@ -8,24 +8,24 @@ docker run -d --name zookeeper --network kafka-net -e ALLOW_ANONYMOUS_LOGIN=yes 
 docker run --rm -it --network kafka-net --name kafka_server -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181 bitnami/kafka
 ```
 
-Se edita kafka_python/config.yaml para que el broker sea kafka_server:9092. El topic, común para productor y consumidor es "python_2". 
+Se edita el fichero de configuración para nuestra aplicación, kafka_python/config.yaml. En él indicamos la dirección del server tanto para el productor como para el consumidor (kafka_server:9092). Además establecemos el tema, "My_Topic". 
 ```shell
 PYTHON_1:
   BROKER: 'kafka_server:9092'
-  PRODUCER: 'python_2'
+  PRODUCER: 'My_Topic'
 
 PYTHON_2:
   BROKER: 'kafka_server:9092'
-  CONSUMER: 'python_2'
+  CONSUMER: 'My_Topic'
 ``` 
  
-Se reconstruye la imagen con el Dockerfile incluido
+Con el Dockerfile incluido construimos una imagen que servirá tanto para el productor como para el consumidor. 
 
 ```shell
-docker build -t 'image_name' .
+docker build -t kafka_python .
 ```
 
-En un terminal ejecutamos el productor
+En un terminal ejecutamos el productor. A partir de la configuración, identifica al servidor Kafka y selecciona el tema.
 
 ```shell
 docker run -it --rm --network kafka-net kafka_python bash
@@ -33,7 +33,7 @@ cd src
 python python1.py 5 2 sum
 ```
 
-Y en otro terminal lanzamos el consumidor
+Y en otro terminal lanzamos el consumidor, que usa la configuración para conectarse al servidor Kafka y elegir el tema. 
 
 ```shell
 /kafka_python/src# python python2.py 0
