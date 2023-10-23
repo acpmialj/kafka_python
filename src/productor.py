@@ -26,7 +26,7 @@ def produce_to_topic(prod_object,msg):
 #%%
 def main(operation,x,y):
     prod = kafkaProducer(BROKER,PRODUCER_TOPIC)
-    message = {'operator_1':x, 'operator_2':y, 'operation':operation}
+    message = {'time':str(datetime.now()), 'operator_1':x, 'operator_2':y, 'operation':operation}
     produce_to_topic(prod,message)
                         
 if __name__ == "__main__":
