@@ -77,7 +77,7 @@ docker run -d --rm -p 9000:9000 --network kafka-net \
 ## Limpieza
 Todos los contenedores han sido lanzados con "--rm", por lo tanto se pueden parar con "docker stop" y se eliminan automáticamente. 
 
-Queda crada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
+Queda creada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
 
 ## A mejorar:
 
