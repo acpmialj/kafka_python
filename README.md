@@ -64,8 +64,18 @@ Result of operation sum is ::: 7
 ```
 NOTA: si lanzamos el consumidor antes que el productor se producirá un error debido a que el tema ("My_Topic") aún no existe. 
 
+## Observación de los mensajes en Kafka
+Se puede lanzar un contenedor "kafdrop" que nos permite examinar el almacén Kafka. Nótese la especificación de la red ("kafka-net") y del servidor Kafka ("kafka_server:9092"). El nombre lo hemos puesto al lanzar Kafka, y el puerto es el usado por omisión. 
+
+```shell
+docker run -d --rm -p 9000:9000 --network kafka-net \
+    -e KAFKA_BROKERCONNECT=kafka_server:9092 \
+    -e JVM_OPTS="-Xms32M -Xmx64M" \
+    -e SERVER_SERVLET_CONTEXTPATH="/" \
+    obsidiandynamics/kafdrop:latest
+```
 ## Limpieza
-Al detener los contenedore productor - consumidor - servidor Kafka, se eliminan. No pasa lo mismo con el servidor ZooKeeper. Hay que pararlo con "docker stop" y eliminarlo con "docker rm". 
+Todos los contenedores han sido lanzados con "--rm", por lo tanto se pueden parar con "docker stop" y se eliminan automáticamente. 
 
 Queda crada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
 
