@@ -25,7 +25,6 @@ docker network create kafka-net
 docker run --rm -d --name zookeeper --network kafka-net -e ALLOW_ANONYMOUS_LOGIN=yes bitnami/zookeeper
 docker run --rm -d --network kafka-net --name kafka_server -e ALLOW_PLAINTEXT_LISTENER=yes -e KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181 bitnami/kafka
 ```
-El terminal queda asociado al segundo contenedor (el servidor Kafka), que irá emitiendo "logs". 
 
 ## Tercera fase: lanzar PRODUCTOR
 En otro terminal lanzamos el contenedor que va a producir eventos. Está basado en el contenedor kafka_python creado en la primera fase.
