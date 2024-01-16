@@ -66,7 +66,7 @@ NOTA: si lanzamos el consumidor antes que el productor se producirá un error de
 Se puede lanzar un contenedor "kafdrop" que nos permite examinar el almacén Kafka. Nótese la especificación de la red ("kafka-net") y del servidor Kafka ("kafka_server:9092"). El nombre lo hemos puesto al lanzar Kafka, y el puerto es el usado por omisión. La interfaz de usuario de Kafdrop está en http://localhost:9000 -- esto es, puerto 9000 del anfitrión. 
 
 ```shell
-docker run -d --rm -p 9000:9000 --network kafka-net \
+docker run -d --rm -p 9000:9000 --name kafdrop --network kafka-net \
     -e KAFKA_BROKERCONNECT=kafka_server:9092 \
     -e JVM_OPTS="-Xms32M -Xmx64M" \
     -e SERVER_SERVLET_CONTEXTPATH="/" \
