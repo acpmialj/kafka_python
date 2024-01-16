@@ -77,17 +77,16 @@ Todos los contenedores han sido lanzados con "--rm", por lo tanto se pueden para
 
 Queda creada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
 
-## A mejorar:
+## Comentarios y posibles mejoras:
 
-1. Pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
+1. Se podría pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
 
 docker run -it --rm --network kafka-net -v $HOME/kafka_python:/kafka_python kafka_python bash
 
 Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python"
 
-2. Lanzar todo con docker compose
-
-
+2. Lanzar todo con docker compose.
+3. Si queremos que el consumidor lea los temas desde el principio, es necesario crear un nuevo grupo de consumidores, 'group_id', y definir en transactions/kafkaConsumer.py que la configuración 'auto.offset.reset' tiene el valor 'earliest' (vs. 'latest'). Es así porque la configuración de offset va ligada al grupo de consumidores, y es al crear el grupo (la primera vez que se usa) cuando se hace esta asociación. En el código, el 'group_id' se define en src/consumidor.py, en la llamada a kafkaConsumer(... 'group1' ...).
  
 ## Fuente
 Repositorio original: https://medium.com/nerd-for-tech/python-and-kafka-message-passing-and-more-44ccb4f1576c 
