@@ -60,7 +60,12 @@ Received message: b'{"operator_1": "5", "operator_2": "2", "operation": "sum"}'
 Going to decode message::  b'{"operator_1": "5", "operator_2": "2", "operation": "sum"}'
 Result of operation sum is ::: 7
 ```
-NOTA: si lanzamos el consumidor antes que el productor se producirá un error debido a que el tema ("My_Topic") aún no existe. 
+NOTA 1: si lanzamos el consumidor antes que el productor se producirá un error debido a que el tema ("My_Topic") aún no existe. 
+
+NOTA 2: si hay mensajes almacenados en el tema "My_topic", el consumidor leerá solamente los nuevos, porque el parámetro "auto.offset.reset" del cliente consumidor se ha establecido como "latest" en el fichero transactions/kafkaConsumer.py. Si queremos procesar los mensajes almacenados, podemos cambiar la línea correspondiente de código para que sea:
+```
+        'default.topic.config': {'auto.offset.reset': 'earliest'}
+```
 
 ## Observación de los mensajes en Kafka
 Se puede usar el comando kafka-console-consumer.sh en el contenedor kafka_server para observar los mensajes almacenados:
