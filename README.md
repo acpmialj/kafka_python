@@ -63,7 +63,12 @@ Result of operation sum is ::: 7
 NOTA: si lanzamos el consumidor antes que el productor se producirá un error debido a que el tema ("My_Topic") aún no existe. 
 
 ## Observación de los mensajes en Kafka
-Se puede lanzar un contenedor "kafdrop" que nos permite examinar el almacén Kafka. Nótese la especificación de la red ("kafka-net") y del servidor Kafka ("kafka_server:9092"). El nombre lo hemos puesto al lanzar Kafka, y el puerto es el usado por omisión. La interfaz de usuario de Kafdrop está en http://localhost:9000 -- esto es, puerto 9000 del anfitrión. 
+Se puede usar el comando kafka-console-consumer.sh en el contenedor kafka_server para observar los mensajes almacenados:
+```shell
+docker exec -it kafka_server kafka-console-consumer.sh --bootstrap-server kafka_server:9092 --topic My_Topic --from-beginning
+```
+
+También se puede lanzar un contenedor "kafdrop" que nos permite examinar el almacén Kafka con una interfaz webUI. Nótese la especificación de la red ("kafka-net") y del servidor Kafka ("kafka_server:9092"). El nombre lo hemos puesto al lanzar Kafka, y el puerto es el usado por omisión. La interfaz de usuario de Kafdrop está en http://localhost:9000 -- esto es, puerto 9000 del anfitrión. 
 
 ```shell
 docker run -d --rm -p 9000:9000 --name kafdrop --network kafka-net \
