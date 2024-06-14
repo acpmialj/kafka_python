@@ -89,9 +89,24 @@ Todos los contenedores han sido lanzados con "--rm", por lo tanto se pueden para
 
 Queda creada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
 
+
+## Comentarios y posibles mejoras:
+
+1. Se podría pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
+
+docker run -it --rm --network kafka-net -v $HOME/kafka_python:/kafka_python kafka_python bash
+
+Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python"
+
+2. Sería interesante automatizar todo el proceso usando docker compose.
+3. Si queremos que el consumidor lea los temas desde el principio, es necesario crear un nuevo grupo de consumidores, 'group_id', y definir en transactions/kafkaConsumer.py que la configuración 'auto.offset.reset' tiene el valor 'earliest' (vs. 'latest'). Es así porque la configuración de offset va ligada al grupo de consumidores, y es al crear el grupo (la primera vez que se usa) cuando se hace esta asociación. En el código, el 'group_id' se define en src/consumidor.py, en la llamada a kafkaConsumer(... 'group1' ...).
+ 
+## Fuente
+Repositorio original: https://medium.com/nerd-for-tech/python-and-kafka-message-passing-and-more-44ccb4f1576c 
+
 ## Uso de RedPanda
 
-Lanzamos el compose.yaml de Redpanda. Pone en marcha un clúster de un nodo, y una consola de gestión. Se crea la red "redpanda-quickstart-one-broker_redpanda_network" 
+Lanzamos el redpanda_compose.yaml de Redpanda. Pone en marcha un clúster de un nodo, y una consola de gestión. Se crea la red "redpanda-quickstart-one-broker_redpanda_network" 
 
 Tenemos ya creado el cliente kafka_python de la práctica con kafka. Lo lanzamos
 ```
@@ -131,18 +146,9 @@ Result of operation sum is ::: 12
 ```
 El resultado es el esperado: se ha obtenido el mensaje.
 
-## Comentarios y posibles mejoras:
-
-1. Se podría pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
-
-docker run -it --rm --network kafka-net -v $HOME/kafka_python:/kafka_python kafka_python bash
-
-Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python"
-
-2. Sería interesante automatizar todo el proceso usando docker compose.
-3. Si queremos que el consumidor lea los temas desde el principio, es necesario crear un nuevo grupo de consumidores, 'group_id', y definir en transactions/kafkaConsumer.py que la configuración 'auto.offset.reset' tiene el valor 'earliest' (vs. 'latest'). Es así porque la configuración de offset va ligada al grupo de consumidores, y es al crear el grupo (la primera vez que se usa) cuando se hace esta asociación. En el código, el 'group_id' se define en src/consumidor.py, en la llamada a kafkaConsumer(... 'group1' ...).
- 
-## Fuente
-Repositorio original: https://medium.com/nerd-for-tech/python-and-kafka-message-passing-and-more-44ccb4f1576c 
-
+NOTA: Si tenemos en el directorio de trabajo los programas y configuraciones de productor y consumidor, podemos lanzar el contenedor kafka_python con:
+```
+docker run -it --rm --network redpanda-quickstart-one-broker_redpanda_network -v $HOME/kafka_python:/kafka_python kafka_python bash
+```
+De esta forma, en vez de instalar nano en el contenedor y editar los ficheros "desde dentro", podemos editarlos desde el host. 
 
