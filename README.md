@@ -89,6 +89,48 @@ Todos los contenedores han sido lanzados con "--rm", por lo tanto se pueden para
 
 Queda creada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar con "docker network rm kafka-net". 
 
+## Uso de RedPanda
+
+Lanzamos el compose.yaml de Redpanda. Pone en marcha un clúster de un nodo, y una consola de gestión. Se crea la red "redpanda-quickstart-one-broker_redpanda_network" 
+
+Tenemos ya creado el cliente kafka_python de la práctica con kafka. Lo lanzamos
+```
+docker run -it --rm --network redpanda-quickstart-one-broker_redpanda_network kafka_python bash
+```
+Dentro del contenedor instalamos nano (apt update && apt install nano) y editamos el fichero de configuración. Cambiamos el nombre del broker por "redpanda-0".
+
+Todavía en el shell del contenedor kafka_python, lanzamos el productor:
+```
+root@c53dbe047dcb:/kafka_python/src# python productor.py 5 7 sum
+Message produced: b'{"time": "2024-06-14 08:30:11.112173", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+```
+El mensaje al topic My_Topic, generado desde la librería Kafka, queda almacenado en redpanda. Lo podemos ver (desde otro terminal) ejecutando 
+```
+docker exec -it redpanda-0 rpk topic consume My_Topic --num 1
+{
+  "topic": "My_Topic",
+  "value": "{\"time\": \"2024-06-14 08:30:11.112173\", \"operator_1\": \"5\", \"operator_2\": \"7\", \"operation\": \"sum\"}",
+  "timestamp": 1718353811112,
+  "partition": 0,
+  "offset": 0
+}
+```
+Como el mensaje sigue almacenado, vamos a consumirlo desde el consumidor Kafka. 
+
+Volvemos al contenedor kafka_python (seguiremos conectados a él desde una consola). Lo primero es editar en transactions/kafkaConsumer.py y cambiar la línea donde se configura el acceso al topic, para que ponga:
+```
+        'default.topic.config': {'auto.offset.reset': 'earliest'}
+```
+Hecho esto, vamos a src (cd ../src) y ejecutamos 
+```
+root@c53dbe047dcb:/kafka_python/src# python consumidor.py 0
+Starting Consumer with client id :  0
+Received message: b'{"time": "2024-06-14 08:30:11.112173", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+Going to decode message::  b'{"time": "2024-06-14 08:30:11.112173", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+Result of operation sum is ::: 12
+```
+El resultado es el esperado: se ha obtenido el mensaje.
+
 ## Comentarios y posibles mejoras:
 
 1. Se podría pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
