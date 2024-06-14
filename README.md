@@ -37,8 +37,9 @@ Una vez en el shell del productor, lanzamos el programa que genera un evento:
 ```shell
 cd src
 python productor.py 5 7 sum
+Message produced: b'{"time": "2024-06-14 08:42:56.001910", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
 ```
-El productor termina inmediatamente. El evento con contenido <5, 7, sum> queda almacenado en Kafka.
+El productor termina inmediatamente. El evento con contenido <hora, 5, 7, sum> queda almacenado en Kafka.
 
 ## Cuarta fase: lanzar CONSUMIDOR
 En un terminal nuevo, ejecutamos el contenedor que va a hacer de consumidor de evento. Está basado en el contenedor kafka_python creado en la primera fase.
@@ -56,9 +57,10 @@ Starting Consumer with client id :  0
 El consumidor se asocia al terminal. Según vayamos recibiendo eventos irán apareciendo mensajes por el mismo. Si no hemos tardado mucho en lanzarlo, se consumirá de forma inmediata el evento generado por el productor, así que veremos:
 
 ```shell
-Received message: b'{"operator_1": "5", "operator_2": "2", "operation": "sum"}'
-Going to decode message::  b'{"operator_1": "5", "operator_2": "2", "operation": "sum"}'
-Result of operation sum is ::: 7
+Starting Consumer with client id :  0
+Received message: b'{"time": "2024-06-14 08:42:56.001910", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+Going to decode message::  b'{"time": "2024-06-14 08:42:56.001910", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+Result of operation sum is ::: 12
 ```
 NOTA 1: si lanzamos el consumidor antes que el productor se producirá un error debido a que el tema ("My_Topic") aún no existe. 
 
