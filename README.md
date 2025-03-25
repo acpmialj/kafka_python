@@ -119,7 +119,7 @@ CONSUMER:
   TOPIC: 'My_Topic'
 ```
 
-Tras ello podemos lanzar el consumidor, que quedará en espera. Nótese que "0" es el grupo de consumidores. 
+Tras ello podemos lanzar el consumidor, que quedará en espera. Nótese que "0" es el identificador del cliente, y que el grupo de consumidores es "group1". 
 ```
 docker run -it --rm --network redpanda-quickstart-one-broker_redpanda_network -v .:/kafka_python kafka_python bash
 cd src
