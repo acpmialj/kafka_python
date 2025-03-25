@@ -141,6 +141,7 @@ Result of operation sum is ::: 12
 ```
 Podemos ver el mensaje en la consola de gestión, o desde otro terminal, ejecutando
 
+```
 docker exec -it redpanda-0 rpk topic consume My_Topic --num 1
 {
   "topic": "My_Topic",
@@ -149,5 +150,5 @@ docker exec -it redpanda-0 rpk topic consume My_Topic --num 1
   "partition": 0,
   "offset": 0
 }
-
+```
 Como hemos podido comprobar, RedPanda y Kafka se comportan igual de cara a los usuarios. 
