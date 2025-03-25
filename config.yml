@@ -1,7 +1,7 @@
 PRODUCER:
-  BROKER: 'kafka_server:9092'
+  BROKER: 'redpanda-0:9092'
   TOPIC: 'My_Topic'
 
 CONSUMER:
-  BROKER: 'kafka_server:9092'
+  BROKER: 'redpanda-0:9092'
   TOPIC: 'My_Topic'

@@ -100,7 +100,54 @@ Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python"
 
 3. Si queremos que un consumidor lea los temas desde el principio, es necesario crear un nuevo grupo de consumidores, 'group_id', y definir en transactions/kafkaConsumer.py que la configuración 'auto.offset.reset' tiene el valor 'earliest' (vs. 'latest'). Es así porque la configuración de offset va ligada al grupo de consumidores, y es al crear el grupo (la primera vez que se usa) cuando se hace esta asociación. En el código, el 'group_id' se define en src/consumidor.py, en la llamada a kafkaConsumer(... 'group1' ...).
  
-## Fuente
-Repositorio original: https://medium.com/nerd-for-tech/python-and-kafka-message-passing-and-more-44ccb4f1576c 
+## Uso de RedPanda
+Lanzamos el redpanda_compose.yaml de Redpanda. 
+```
+docker compose -f redpanda_compose.yaml -d up
+```
+Pone en marcha un clúster de un nodo, y una consola de gestión (http://localhost:8080). Se crea la red "redpanda-quickstart-one-broker_redpanda_network".
 
+Tenemos ya creado el cliente kafka_python de la práctica con kafka. Podemos usarlo, pero modificando los programas python para que usen como broker "redpanda-0". Lo hacemos en el fichero config.yml. 
+```
+PRODUCER:
+  BROKER: 'redpanda-0:9092'
+  TOPIC: 'My_Topic'
 
+CONSUMER:
+  BROKER: 'redpanda-0:9092'
+  TOPIC: 'My_Topic'
+```
+
+Tras ello podemos lanzar el consumidor, que quedará en espera:
+```
+docker run -it --rm --network redpanda-quickstart-one-broker_redpanda_network -v .:/kafka_python kafka_python bash
+cd src
+python consumidor.py 0
+Starting Consumer with client id :  0
+```
+Desde otra terminal lanzamos el productor:
+
+```
+docker run -it --rm --network redpanda-quickstart-one-broker_redpanda_network -v .:/kafka_python kafka_python bash
+cd src
+python productor.py 5 7 sum
+Message produced: b'{"time": "2025-03-25 15:42:03.339875", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+``` 
+El mensaje ha sido generado. En la terminal asociada al consumidor veremos que ha sido recibido y procesado correctamente:
+```
+Received message: b'{"time": "2025-03-25 15:42:03.339875", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+Going to decode message::  b'{"time": "2025-03-25 15:42:03.339875", "operator_1": "5", "operator_2": "7", "operation": "sum"}'
+Result of operation sum is ::: 12
+```
+Podemos ver el mensaje en la consola de gestión, o desde otro terminal, ejecutando
+
+docker exec -it redpanda-0 rpk topic consume My_Topic --num 1
+{
+  "topic": "My_Topic",
+  "value": "{\"time\": \"2025-03-25 15:36:56.905323\", \"operator_1\": \"5\", \"operator_2\": \"7\", \"operation\": \"sum\"}",
+  "timestamp": 1742917016905,
+  "partition": 0,
+  "offset": 0
+}
+
+Como hemos podido comprobar, RedPanda y Kafka se comportan igual de cara a los usuarios. 
