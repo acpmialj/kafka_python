@@ -90,11 +90,12 @@ Queda creada la red "kafka-net" (ver con "docker network ls"). Se puede eliminar
 
 ## Comentarios y posibles mejoras:
 
-1. Se podría pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
+1. Se puede pasar la información al contenedor cliente (los programas) usando volúmenes, en vez de tener que cambiar la imagen cada vez que se edita un fichero.  
 
-docker run -it --rm --network kafka-net -v $HOME/kafka_python:/kafka_python kafka_python bash
-
-Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python"
+```
+docker run -it --rm --network kafka-net -v .:/kafka_python kafka_python bash
+```
+Hecho esto, en el Dockerfile sobraría la línea "ADD ./ /kafka_python" (no pasa nada si está). Lo bueno es que todo lo que modifiquemos en el host será inmediatamente visible en el contenedor, y viceversa. 
 
 2. En el directorio src hay también un "productor_simple.py" y un "consumidor_simple.py" que sirven como ejemplos de operaciones sencillas de envío / suscripción. 
 
@@ -118,7 +119,7 @@ CONSUMER:
   TOPIC: 'My_Topic'
 ```
 
-Tras ello podemos lanzar el consumidor, que quedará en espera:
+Tras ello podemos lanzar el consumidor, que quedará en espera. Nótese que "0" es el grupo de consumidores. 
 ```
 docker run -it --rm --network redpanda-quickstart-one-broker_redpanda_network -v .:/kafka_python kafka_python bash
 cd src
