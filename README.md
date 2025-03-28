@@ -85,8 +85,6 @@ Podemos observar lo que está almacenado en kafka de diferrentes maneras. De for
 ```shell
 docker run -d --rm -p 9000:9000 --name kafdrop --network kafka-net \
     -e KAFKA_BROKERCONNECT=kafka-server:9092 \
-    -e JVM_OPTS="-Xms32M -Xmx64M" \
-    -e SERVER_SERVLET_CONTEXTPATH="/" \
     obsidiandynamics/kafdrop:latest
 ```
 Desde Kafdrop se puede observar cómo Kafka almacena información sobre los clientes que acceden a sus datos, así como de los "offsets" de los últimos mensajes leídos. 
@@ -161,4 +159,17 @@ Como hemos podido comprobar, RedPanda y Kafka se comportan igual de cara a los u
 Podemos hacer limpieza con
 ```
 docker compose -f redpanda_compose.yaml down
+```
+### Nota
+Se puede crear un contenedor RedPanda directamente, con el nombre kafka-server (para compatibilidad con el código) con este comando:
+```
+docker run --rm -d --network kafka-net --name kafka-server --hostname kafka-server docker.redpanda.com/redpandadata/redpanda:v24.1.7 redpanda start \
+      --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092 \
+      --advertise-kafka-addr internal://kafka-server:9092,external://localhost:19092 \
+      --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:18081 \
+      --rpc-addr kafka-server:33145 \
+      --advertise-rpc-addr kafka-server:33145 \
+      --mode dev-container \
+      --smp 1 \
+      --default-log-level=info
 ```
