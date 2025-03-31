@@ -188,7 +188,8 @@ Podemos ver con Kafdrop que los mensajes se van guardando en el tema "Ops".
 
 Lanzamos ahora un contenedor Druid:
 
-```docker run --rm -itd \
+```
+docker run --rm -itd \
 --name druid \
 --network kafka-net \
 -p 9999:9999 \
