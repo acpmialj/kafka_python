@@ -173,3 +173,51 @@ docker run --rm -d --network kafka-net --name kafka-server --hostname kafka-serv
       --smp 1 \
       --default-log-level=info
 ```
+
+## Druid
+Nos aseguramos de tener un servidor kafka en kafka-server:9092. 
+
+Lanzamos un entorno de ejecución de Python. Desde el mismo, un productor continuo de eventos al topic "Ops", con el formato de mensajes usado en "productor.py". 
+
+```
+docker run -it --rm --network kafka-net -v .:/kafka_python kafka_python bash
+cd src
+python productor_continuo.py
+```
+Podemos ver con Kafdrop que los mensajes se van guardando en el tema "Ops". 
+
+Lanzamos ahora un contenedor Druid:
+
+```docker run --rm -itd \
+--name druid \
+--network kafka-net \
+-p 9999:9999 \
+-v .:/workspace \
+jdvelasq/druid:0.22.1
+```
+
+Esperar unos minutos a que esté en marcha y conectarse a http://localhost:9999
+
+Una vez en marcha, iniciamos el proceso de carga desde Kafka. 
+
+Pulsar "Load data", "New spec", "Apache Kafka" y luego "Connect data". 
+
+Introducir "Bootstrap servers": "kafka-server:9092". "Topic": "Ops". Muestrear desde "Start of stream". Finalmente, "Apply". 
+
+Veremos los datos como líneas JSON. Pulsamos "Next: Parse data". 
+
+Aparecen las líneas tabuladas, con la columna "time" bien formateada. Pulsamos "Next: Parse time".
+
+Druid acepta la columna "time" como base de particionado. Pulsamos "Next: Transform" (no hacemos nada), "Next: Filter" (no hacemos nada), "Next: Configure schema" (no hacemos nada), "Next: Partition".
+
+Seleccionamos la granularidad: "hour". Pulsamos "Next: Tune".
+
+Seleccionamos "Use earliest offset" como "True". Pulsamos "Next: Publish", veremos que el Datasource tendrá como nombre "Ops". Pulsamos "Next: Edit spec" y ya "SUBMIT". 
+
+Al cabo de un rato, en Datasources tendremos "Ops" disponible. 
+
+
+
+
+
+
